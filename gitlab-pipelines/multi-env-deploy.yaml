@@ -1,0 +1,109 @@
+stages:
+  - build
+  - deploy-staging
+  - approve
+  - deploy-production
+
+variables:
+  DOCKER_REGISTRY: $CI_REGISTRY
+  DOCKER_IMAGE: $CI_REGISTRY_IMAGE/api-service
+  IMAGE_TAG: $CI_COMMIT_SHORT_SHA
+
+# Build and push image to GitLab Container Registry
+build:
+  stage: build
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build -t $DOCKER_IMAGE:$IMAGE_TAG -t $DOCKER_IMAGE:latest .
+    - docker push $DOCKER_IMAGE:$IMAGE_TAG
+    - docker push $DOCKER_IMAGE:latest
+  only:
+    - main
+
+# Deploy to staging via SSH
+deploy-staging:
+  stage: deploy-staging
+  image: alpine:3.18
+  environment:
+    name: staging
+    url: https://staging.myapp.com
+  before_script:
+    - apk add --no-cache openssh-client curl
+    - eval $(ssh-agent -s)
+    - echo "$STAGING_SSH_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - ssh-keyscan -H $STAGING_HOST >> ~/.ssh/known_hosts
+  script:
+    - |
+      ssh $STAGING_USER@$STAGING_HOST "
+        cd /opt/myapp &&
+        docker pull $DOCKER_IMAGE:$IMAGE_TAG &&
+        docker-compose down &&
+        IMAGE_TAG=$IMAGE_TAG docker-compose up -d &&
+        sleep 10 &&
+        docker-compose ps
+      "
+    - curl --fail --retry 5 --retry-delay 5 https://staging.myapp.com/health
+  only:
+    - main
+  needs:
+    - build
+
+# Manual approval gate before production
+approve-production:
+  stage: approve
+  image: alpine:3.18
+  script:
+    - echo "Approved for production deploy by $GITLAB_USER_LOGIN"
+  when: manual
+  allow_failure: false
+  only:
+    - main
+  needs:
+    - deploy-staging
+
+# Deploy to production via SSH
+deploy-production:
+  stage: deploy-production
+  image: alpine:3.18
+  environment:
+    name: production
+    url: https://myapp.com
+  before_script:
+    - apk add --no-cache openssh-client curl
+    - eval $(ssh-agent -s)
+    - echo "$PROD_SSH_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - ssh-keyscan -H $PROD_HOST >> ~/.ssh/known_hosts
+  script:
+    - |
+      ssh $PROD_USER@$PROD_HOST "
+        cd /opt/myapp &&
+        docker pull $DOCKER_IMAGE:$IMAGE_TAG &&
+        docker-compose down &&
+        IMAGE_TAG=$IMAGE_TAG docker-compose up -d &&
+        sleep 10 &&
+        docker-compose ps
+      "
+    - curl --fail --retry 5 --retry-delay 5 https://myapp.com/health
+  after_script:
+    - |
+      if [ "$CI_JOB_STATUS" = "success" ]; then
+        curl -X POST -H 'Content-type: application/json' \
+          --data "{\"text\":\"Production deploy succeeded for $CI_PROJECT_NAME @ $CI_COMMIT_SHORT_SHA\"}" \
+          $SLACK_WEBHOOK_URL
+      else
+        curl -X POST -H 'Content-type: application/json' \
+          --data "{\"text\":\"Production deploy FAILED for $CI_PROJECT_NAME @ $CI_COMMIT_SHORT_SHA\"}" \
+          $SLACK_WEBHOOK_URL
+      fi
+  only:
+    - main
+  needs:
+    - approve-production
