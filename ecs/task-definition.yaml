@@ -1,0 +1,18 @@
+executionRoleArn: arn:aws:iam::806630305776:role/ecsTaskExecutionRole
+containerDefinitions:
+  - name: nginx
+    image: <+artifact.image>
+    cpu: 256
+    memory: 512
+    essential: true
+    portMappings:
+      - containerPort: 80
+        protocol: tcp
+    environment: []
+memory: "512"
+taskRoleArn: arn:aws:iam::806630305776:role/ecsTaskExecutionRole
+family: my-app-task
+requiresCompatibilities:
+  - FARGATE
+networkMode: awsvpc
+cpu: "256"
