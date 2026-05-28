@@ -4,9 +4,9 @@ desiredCount: 1
 networkConfiguration:
   awsvpcConfiguration:
     securityGroups:
-      - subnet-00477066a2faec6dc
+      - subnet-004xxxxxxxx
     subnets:
-      - sg-0876bc30b3322bace
+      - sg-0876xxxxxx
     assignPublicIp: ENABLED
 deploymentConfiguration:
   maximumPercent: 200
