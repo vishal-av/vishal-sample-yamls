@@ -1,4 +1,4 @@
-executionRoleArn: arn:aws:iam::806630305776:role/ecsTaskExecutionRole
+executionRoleArn: arn:aws:iam::30xxxxxxxx:role/ecsTaskExecutionRole
 containerDefinitions:
   - name: nginx
     image: <+artifact.image>
@@ -10,7 +10,7 @@ containerDefinitions:
         protocol: tcp
     environment: []
 memory: "512"
-taskRoleArn: arn:aws:iam::806630305776:role/ecsTaskExecutionRole
+taskRoleArn: arn:aws:iam::30xxxxxxxx:role/ecsTaskExecutionRole
 family: my-app-task
 requiresCompatibilities:
   - FARGATE
