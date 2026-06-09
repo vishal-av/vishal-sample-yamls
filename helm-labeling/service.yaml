@@ -1,0 +1,38 @@
+service:
+  name: nginx-with-labels
+  identifier: nginx_with_labels
+  serviceDefinition:
+    type: Kubernetes
+    spec:
+      manifests:
+        - manifest:
+            identifier: nginx_helm_chart
+            type: HelmChart
+            spec:
+              store:
+                type: Github
+                spec:
+                  connectorRef: <+input>
+                  gitFetchType: Branch
+                  branch: main
+                  folderPath: helm-labeling
+              chartName: nginx-demo
+              helmVersion: V3
+              skipResourceVersioning: false
+              commandFlags:
+                # Option 1: Label the Helm release metadata
+                # These labels are stored in the Helm release secret/configmap
+                # Query with: helm list --selector team=platform
+                - commandType: Install
+                  flag: "--labels team=platform,env=<+env.name>,owner=myorg,pipeline=<+pipeline.name>"
+                - commandType: Upgrade
+                  flag: "--labels team=platform,env=<+env.name>,owner=myorg,pipeline=<+pipeline.name>"
+
+                # Option 2: Label the Kubernetes resources (pods, deployments, services)
+                # These labels are applied to the actual K8s resources
+                # Query with: kubectl get pods -l team=platform
+                - commandType: Install
+                  flag: "--set commonLabels.team=platform --set commonLabels.env=<+env.name> --set commonLabels.owner=myorg --set commonLabels.cost-center=1234"
+                - commandType: Upgrade
+                  flag: "--set commonLabels.team=platform --set commonLabels.env=<+env.name> --set commonLabels.owner=myorg --set commonLabels.cost-center=1234"
+  gitOpsEnabled: false
