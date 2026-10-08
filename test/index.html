@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness Autonomous SDLC Platform</title>
+<style>
+  :root{
+    --bg:#f7f8fc; --card:#fff; --ink:#0f1b33; --muted:#566178; --line:#e6e9f2;
+    --chip:#eef0f5; --chip-ink:#2a3550; --navy:#12233f;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:Inter,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:1200px;margin:0 auto;padding:28px 16px 32px}
+  h1{text-align:center;font-size:clamp(26px,4vw,44px);letter-spacing:-.02em;margin:0 0 28px;font-weight:800}
+  a{color:inherit;text-decoration:none}
+
+  .agents{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .agent{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);
+    border-top:3px solid var(--accent);border-radius:20px;padding:24px;min-height:300px;
+    transition:transform .15s,box-shadow .15s}
+  .agent:hover,.wide:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(15,27,51,.10)}
+  .agent:focus-visible,.wide:focus-visible{outline:2px solid var(--accent,#3b6fd8);outline-offset:3px}
+  .head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+  .ico{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--tint)}
+  .ico svg{width:22px;height:22px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .agent h2{margin:0;font-size:19px;line-height:1.2;font-weight:700}
+  .agent p{margin:0 0 18px;color:var(--muted);font-size:15px;line-height:1.55}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
+  .chip{background:var(--chip);color:var(--chip-ink);border-radius:8px;padding:6px 12px;font-size:13px;white-space:nowrap}
+  .chip.more{background:transparent;border:1px dashed var(--line);color:var(--muted)}
+
+  .blue{--accent:#2f6bd6;--tint:#e9f0fd}
+  .orange{--accent:#c8501f;--tint:#fdece5}
+  .purple{--accent:#6b46c1;--tint:#efeafb}
+  .green{--accent:#2f7d4f;--tint:#e6f4ec}
+
+  .wide{display:flex;align-items:center;gap:32px;border-radius:20px;padding:26px 32px;
+    transition:transform .15s,box-shadow .15s}
+  .wide .t{flex:0 0 22%}
+  .wide h3{margin:0 0 6px;font-size:22px;font-weight:700}
+  .wide p{margin:0;color:var(--muted);font-size:15px;line-height:1.5}
+  .wide .chips{margin:0;flex:1}
+  .more-products{margin-top:20px;background:var(--card);border:1px solid var(--line)}
+
+  .links{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;height:34px;padding:0}
+  .links i{justify-self:center;border-left:2px dashed #cfd5e3;height:100%}
+
+  .platform{background:var(--navy);color:#fff;border:1px solid var(--navy)}
+  .platform p{color:#b9c4dc}
+  .platform .chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#fff;font-size:15px;padding:8px 16px}
+
+  @media (max-width:980px){
+    .agents{grid-template-columns:repeat(2,1fr)}
+    .links{display:none}
+    .platform{margin-top:20px}
+  }
+  @media (max-width:640px){
+    .agents{grid-template-columns:1fr}
+    .wide{flex-direction:column;align-items:flex-start;gap:16px;padding:22px}
+    .wide .t{flex:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Harness Autonomous SDLC Platform</h1>
+
+  <div class="agents">
+    <a class="agent blue" data-anchor="software-delivery-agent">
+      <div class="head"><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 13a8 8 0 0 1 14-5"/><path d="M18 4v4h-4"/><circle cx="19" cy="14" r="1.2"/></svg></span><h2>Software Delivery Agent</h2></div>
+      <p>Get code and agents from commit to production in minutes.</p>
+      <div class="chips"><span class="chip">Deployments</span><span class="chip">Builds</span><span class="chip">Artifacts</span><span class="chip more">+ more</span></div>
+    </a>
+    <a class="agent orange" data-anchor="security-testing-agent">
+      <div class="head"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.500-7-10V6z"/><path d="M12 9v4"/><circle cx="12" cy="15.500" r=".6"/></svg></span><h2>Security Testing Agent</h2></div>
+      <p>Discover bugs and resilience weaknesses before your users do.</p>
+      <div class="chips"><span class="chip">SAST</span><span class="chip">SCA</span><span class="chip">Supply Chain Security</span><span class="chip more">+ more</span></div>
+    </a>
+    <a class="agent purple" data-anchor="runtime-protection-agent">
+      <div class="head"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.500v9L12 21l-8-4.500v-9z"/><path d="M8.500 12l2.500 2.500 4.500-5"/></svg></span><h2>Runtime Protection Agent</h2></div>
+      <p>Catch vulnerabilities before they ship and protect your runtime.</p>
+      <div class="chips"><span class="chip">API Posture</span><span class="chip">AI Posture</span><span class="chip">API Adv. Protection</span><span class="chip more">+ more</span></div>
+    </a>
+    <a class="agent green" data-anchor="cost-management-agent">
+      <div class="head"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.500 9.200c-.4-.8-1.300-1.200-2.500-1.200-1.500 0-2.500.7-2.500 1.800 0 2.700 5 1.300 5 4 0 1.100-1 1.900-2.500 1.900-1.300 0-2.300-.5-2.700-1.400M12 6.500V8m0 8v1.500"/></svg></span><h2>Cost Management Agent</h2></div>
+      <p>Own production and manage costs without surprises.</p>
+      <div class="chips"><span class="chip">AI &amp; Cloud Costs</span><span class="chip">Engineering Efficiency</span><span class="chip more">+ more</span></div>
+    </a>
+  </div>
+
+  <a class="wide more-products" style="margin-top:20px" data-anchor="more-products">
+    <div class="t"><h3>More products</h3><p>More products across the platform.</p></div>
+    <div class="chips"><span class="chip">Incidents</span><span class="chip">Developer Portal</span><span class="chip">Resilience Testing</span><span class="chip">AI Evals</span><span class="chip">Runtime Configuration</span></div>
+  </a>
+
+  <div class="links" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+  <a class="wide platform" data-anchor="platform">
+    <div class="t"><h3>Platform</h3><p>The shared foundation under every agent.</p></div>
+    <div class="chips"><span class="chip">Pipelines</span><span class="chip">Governance</span><span class="chip">DevOps Data</span><span class="chip">Knowledge Graph</span><span class="chip">Worker Agents</span><span class="chip">CLI</span><span class="chip">AgentTrace</span></div>
+  </a>
+</div>
+
+<script>
+  // Set this to the full URL of the Home page. Links open in the parent window (target _top)
+  // and jump to the matching heading in the Products section.
+  var HOME_URL = "https://developer.harness.io/docs/";
+  document.querySelectorAll("[data-anchor]").forEach(function (el) {
+    el.href = HOME_URL + "#" + el.dataset.anchor;
+    el.target = "_top";
+  });
+</script>
+</body>
+</html>
